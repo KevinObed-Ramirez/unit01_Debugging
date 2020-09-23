@@ -11,9 +11,9 @@
  */
 
 /* global variables tracking status of each form section */
-var acresComplete = true;
-var cropsComplete = true;
-var monthsComplete = true;
+var acresComplete = false;
+var cropsComplete = false;
+var monthsComplete = false;
 var fuelComplete = true;
 
 /* global variables referencing sidebar h2 and p elements */
@@ -32,22 +32,78 @@ var acresBox = document.forms[0].acres;
 
 /* verify acres text box entry is a positive number */
 function verifyAcres() {
-   testFormCompleteness();      
+   var validity = true;
+   var messageText= "";
+   
+   try{
+      if(!(acresBox.value > 0)){
+         throw "Please enter a number of acres greater than 0.";
+      }
+   }
+   catch(message){
+      validity = false;
+      messageText = message;
+      //remove erroneous entry from input box
+      acresBox.value ="";
+   }
+   finally{
+      acresComplete = validity;
+      //remove former recommendation
+      messageElement.innerHTML = messageText;
+      messageHeadElement.innerHTML = "";
+      testFormCompleteness();
+   }
 }
 
 /* verify at least one crops checkbox is checked */
 function verifyCrops() {
-   testFormCompleteness();
-}
+   try {
+      for (var i = 0; i < 7; i++) {
+      if (cropsFieldset.getElementsByTagName("input")[i].checked) {
+      cropsComplete = true;
+      messageElement.innerHTML = "";
+      testFormCompleteness();
+      i = 8;
+      }
+      }
+      if (i === 7) {
+      throw "Please select at least one crop.";
+      }
+   }
+   catch(message) {
+      cropsComplete = false;
+      messageHeadElement.innerHTML = "";
+      messageElement.innerHTML = message;
+  }
 
+};
 /* verify months text box entry is between 1 and 12 */
 function verifyMonths() {
-   testFormCompleteness();
+   var validity = true;
+   var messageText = "";
+
+   try{
+      if(!(monthsBox.value>= 1&& monthsBox.value <=12)){
+         throw "Please enter a number of months between 1-12"
+      }
+   }
+   catch(message){
+      validity = false;
+      messageText = message;
+      //removes erroneous entry from input box
+      monthsBox.value= "";
+   }
+   finally{
+      monthsComplete = validity;
+      //remove fromer reccomendation
+      messageElement.innerHTML = "";
+      testFormCompleteness();
+   }
 }
 
 /* verify that a fuel option button is selected */
 function verifyFuel() {
-   testFormCompleteness();
+   testFormCompleteness()
 }
 
 /* check if all four form sections are completed */
